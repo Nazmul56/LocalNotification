@@ -1,5 +1,6 @@
 package com.droidkings.localnotification;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -13,12 +14,19 @@ import android.support.v4.app.NotificationCompat;
  * Created by nazmul on 9/18/16.
  */
 public class MyReceiver extends BroadcastReceiver{
+    NotificationManager manager;
+    Notification myNotication;
 
     int MID=0;
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO Auto-generated method stub
-
+        /*int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            // Do something for lollipop and above versions
+        } else{
+            // do something for phones running an SDK before lollipop
+        }*/
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -43,5 +51,23 @@ public class MyReceiver extends BroadcastReceiver{
         MID++;
 
     }
+  /*  private void notific(){
+        //API level 11
+        Intent intent = new Intent("com.droidkings.localnotification.MyReceiver");
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setAutoCancel(false);
+        builder.setTicker("this is ticker text");
+        builder.setContentTitle("Daily Notification");
+        builder.setContentText("You have a new message");
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentIntent(pendingIntent);
+        builder.setOngoing(true);
+        builder.setSubText("This is subtext...");   //API level 16
+        builder.setNumber(100);
+        builder.build();
+        myNotication = builder.getNotification();
+        manager.notify(11, myNotication);
+    }*/
 
 }

@@ -12,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -20,6 +23,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
     AlarmManager am;  //This should be Global Variable
     PendingIntent pendingIntent;///Global variable
+    TextView switchStatus;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Button set = (Button) findViewById(R.id.setime);
         Button cancelAl =(Button) findViewById(R.id.cancleAlarm);
+        Switch firstSwitch = (Switch) findViewById(R.id.switch1);
+        firstSwitch.setChecked(true);
+        switchStatus = (TextView) findViewById(R.id.status);
+
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,6 +52,28 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        firstSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+
+                if(isChecked){
+                    switchStatus.setText("Switch is currently ON");
+                }else{
+                    switchStatus.setText("Switch is currently OFF");
+                }
+
+            }
+        });
+
+        //check the current state before we display the screen
+        if(firstSwitch.isChecked()){
+            switchStatus.setText("Switch is currently ON");
+        }
+        else {
+            switchStatus.setText("Switch is currently OFF");
+        }
     }
     private TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
         @Override

@@ -27,5 +27,24 @@
         android:layout_below="@+id/setime"
         android:layout_centerHorizontal="true" />
 
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Switch"
+        android:id="@+id/switch1"
+        android:layout_below="@+id/cancleAlarm"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Off"
+        android:id="@+id/status"
+        android:layout_below="@+id/switch1"
+
+        android:layout_centerHorizontal="true"
+        />
+
 
 </RelativeLayout>
