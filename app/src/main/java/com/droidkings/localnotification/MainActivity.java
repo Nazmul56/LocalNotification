@@ -18,7 +18,8 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-
+    AlarmManager am;  //This should be Global Variable
+    PendingIntent pendingIntent;///Global variable
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,10 +27,21 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Button set = (Button) findViewById(R.id.setime);
+        Button cancelAl =(Button) findViewById(R.id.cancleAlarm);
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog(888);
+            }
+        });
+        cancelAl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (am!= null) {
+                    am.cancel(pendingIntent);//Cancel the pre set Alarm From Alarm manager
+                    pendingIntent.cancel();//Release The panding intent
+                }
+
             }
         });
     }
@@ -59,21 +71,22 @@ public class MainActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         // we can set time by open date and time picker dialog
         calendar.set(Calendar.HOUR_OF_DAY, h);
-        calendar.set( Calendar.MINUTE,m);
+        calendar.set(Calendar.MINUTE,m);
         calendar.set(Calendar.SECOND, 0);
 
         Toast.makeText(this,  showTime(h,m), Toast.LENGTH_SHORT).show();
 
         Intent intent1 = new Intent(MainActivity.this, MyReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+       pendingIntent = PendingIntent.getBroadcast(
                 MainActivity.this, 0 , intent1,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-        AlarmManager am = (AlarmManager) MainActivity.this
+        am = (AlarmManager) MainActivity.this
                 .getSystemService(MainActivity.this.ALARM_SERVICE);
 
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pendingIntent);
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                1000*60, pendingIntent);
+       // am.cancel(pendingIntent);
     }
 
     public String showTime(int hour, int min) {

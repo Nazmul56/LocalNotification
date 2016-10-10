@@ -37,8 +37,8 @@ public class MyReceiver extends BroadcastReceiver{
                 .setContentTitle("Alaram Fired")
                 .setContentText("Events To be PErformed").setSound(alarmSound)
                 .setAutoCancel(true).setWhen(when)
-                .setContentIntent(pendingIntent)
-                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+                .setContentIntent(pendingIntent);
+                //.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
         notificationManager.notify(MID, mNotifyBuilder.build());
         MID++;
 

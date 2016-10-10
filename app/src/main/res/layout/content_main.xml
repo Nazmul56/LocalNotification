@@ -19,6 +19,13 @@
         android:id="@+id/setime"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="48dp" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancle Alarm"
+        android:id="@+id/cancleAlarm"
+        android:layout_below="@+id/setime"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

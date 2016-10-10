@@ -44,7 +44,7 @@ public class MyAlarmService extends Service {
     }
     private void notific(){
         //API level 11
-        Intent intent = new Intent("com.rj.notitfications.SECACTIVITY");
+        Intent intent = new Intent("com.droidkings.localnotification.MyReceiver");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
         Notification.Builder builder = new Notification.Builder(this);
         builder.setAutoCancel(false);
@@ -57,7 +57,6 @@ public class MyAlarmService extends Service {
         builder.setSubText("This is subtext...");   //API level 16
         builder.setNumber(100);
         builder.build();
-
         myNotication = builder.getNotification();
         manager.notify(11, myNotication);
     }
