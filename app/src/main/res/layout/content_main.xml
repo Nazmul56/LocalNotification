@@ -11,40 +11,71 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.droidkings.localnotification.MainActivity"
     tools:showIn="@layout/activity_main">
-
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Set Alarm"
-        android:id="@+id/setime"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancle Alarm"
-        android:id="@+id/cancleAlarm"
-        android:layout_below="@+id/setime"
-        android:layout_centerHorizontal="true" />
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Switch"
-        android:id="@+id/switch1"
-        android:layout_below="@+id/cancleAlarm"
-        android:layout_centerHorizontal="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/alarmTime"
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Off"
-        android:id="@+id/status"
-        android:layout_below="@+id/switch1"
+                android:text="0:0"
+                android:layout_centerHorizontal="true"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change Alarm Time"
+                android:id="@+id/setime"
+                android:layout_centerHorizontal="true"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Off"
+                android:id="@+id/status"
 
-        android:layout_centerHorizontal="true"
+
+                android:layout_centerHorizontal="true"
+                />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+             <Switch
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/switch1"
+                 android:layout_centerHorizontal="true"
         />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 
 </RelativeLayout>

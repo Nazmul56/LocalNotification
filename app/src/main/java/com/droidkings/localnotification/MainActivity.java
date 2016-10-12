@@ -4,7 +4,9 @@ import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +25,14 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
     AlarmManager am;  //This should be Global Variable
     PendingIntent pendingIntent;///Global variable
-    TextView switchStatus;
+    TextView switchStatus,timetv;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String Switch_Mode =  "switch_mode";
+    public static final String Hour = "hourKey";
+    public static final String Minute = "minutesKey";
+    SharedPreferences sharedpreferences;
+    Switch firstSwitch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,9 +40,18 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Button set = (Button) findViewById(R.id.setime);
-        Button cancelAl =(Button) findViewById(R.id.cancleAlarm);
-        Switch firstSwitch = (Switch) findViewById(R.id.switch1);
-        firstSwitch.setChecked(true);
+
+        timetv = (TextView) findViewById(R.id.alarmTime);
+         firstSwitch = (Switch) findViewById(R.id.switch1);
+
+       firstSwitch.setChecked(read_sharedprefarance());
+        read_time();
+        /**Edit the shared preference*/
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+        //editor.putString(Phone, ph);String
+        //editor.putString(Email, e);
+
         switchStatus = (TextView) findViewById(R.id.status);
 
         set.setOnClickListener(new View.OnClickListener() {
@@ -42,44 +60,77 @@ public class MainActivity extends AppCompatActivity {
                 showDialog(888);
             }
         });
-        cancelAl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (am!= null) {
-                    am.cancel(pendingIntent);//Cancel the pre set Alarm From Alarm manager
-                    pendingIntent.cancel();//Release The panding intent
-                }
 
-            }
-        });
         firstSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
-
+                SharedPreferences.Editor editor = sharedpreferences.edit();
                 if(isChecked){
-                    switchStatus.setText("Switch is currently ON");
+                    SharedPreferences sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+                    int hour = sharedPref.getInt(Hour,0);
+                    int minute = sharedPref.getInt(Minute,0);
+                    notification(hour,minute);
+                   editor.putBoolean(Switch_Mode, true);
+                    switchStatus.setText("ON");
                 }else{
-                    switchStatus.setText("Switch is currently OFF");
+                    editor.putBoolean(Switch_Mode,false);
+                    if (am!= null) {
+                        am.cancel(pendingIntent);//Cancel the pre set Alarm From Alarm manager
+                        pendingIntent.cancel();//Release The panding intent
+                    }
+                    switchStatus.setText("OFF");
                 }
+                editor.commit();
 
             }
         });
 
         //check the current state before we display the screen
         if(firstSwitch.isChecked()){
-            switchStatus.setText("Switch is currently ON");
+            switchStatus.setText("ON");
         }
         else {
-            switchStatus.setText("Switch is currently OFF");
+            switchStatus.setText("OFF");
         }
+    }
+    public boolean read_sharedprefarance(){
+        SharedPreferences sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);\
+
+        boolean mode = sharedPref.getBoolean(Switch_Mode,false);
+
+        return mode;
+    }
+    public void read_time()
+    {
+        SharedPreferences sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+        int hour = sharedPref.getInt(Hour,0);
+        int minute = sharedPref.getInt(Minute,0);
+
+        String time = showTime(hour, minute);
+        timetv.setText(time);
+
+
     }
     private TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-           notification(hourOfDay,minute);
+
+         //  notification(hourOfDay, minute);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putInt(Hour, hourOfDay);
+            editor.putInt(Minute,minute);
+            editor.commit();
+            read_time();
+
+
         }
+
+
     };
 
     @Override
