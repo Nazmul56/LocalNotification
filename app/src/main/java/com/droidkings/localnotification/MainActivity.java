@@ -23,16 +23,18 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-    AlarmManager am;  //This should be Global Variable
+    AlarmManager first_am,am1,am2;  //This should be Global Variable
+    static int FIRSTALARM = 1,SECONDALARM=2;
+    int dialog_no = 0;
     PendingIntent pendingIntent;///Global variable
-    TextView switchStatus,timetv,switchStatus1,timetv1;
+    TextView first_switchStatus, first_time,switchStatus1,timetv1;
     public static final String MyPREFERENCES = "MyPrefs" ;
-    public static final String Switch_Mode =  "switch_mode";
-    public static final String Switch_Mode1 = "switch_mode1";
-    public static final String Hour = "hourKey";
-    public static final String Hour1 = "hourKey1";
-    public static final String Minute = "minutesKey";
-    public static final String Minute1= "minutesKey1";
+    public static final String first_Switch_Mode =  "first_switch_mode";
+    public static final String second_Switch_Mode = "second_switch_mode";
+    public static final String first_Hour = "first_hourKey";
+    public static final String second_Hour = "second_hourKey";
+    public static final String first_Minute = "first_minutesKey";
+    public static final String second_Minute = "second_minutesKey";
     SharedPreferences sharedpreferences;
     Switch firstSwitch,secondSwitch;
 
@@ -46,23 +48,21 @@ public class MainActivity extends AppCompatActivity {
         FirstAlarmList();
         SecondList();
 
-
     }
     public void FirstAlarmList(){
-        ImageView set = (ImageView) findViewById(R.id.setime);
-        timetv = (TextView) findViewById(R.id.alarmTime);
-        firstSwitch = (Switch) findViewById(R.id.switch1);
-        firstSwitch.setChecked(read_sharedprefarance());
-        read_time(Hour,Minute,1);
+        ImageView set = (ImageView) findViewById(R.id.first_imageview);
+        first_time = (TextView) findViewById(R.id.first_alarmTimetv);
+        firstSwitch = (Switch) findViewById(R.id.first_switchview);
+        firstSwitch.setChecked(read_sharedprefarance(FIRSTALARM));
+        read_time(first_Hour, first_Minute,FIRSTALARM);
         /**Edit the shared preference*/
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        //editor.putString(Phone, ph);String
-        //editor.putString(Email, e);
-        switchStatus = (TextView) findViewById(R.id.status);
+
+        first_switchStatus = (TextView) findViewById(R.id.first_statustv);
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog(888);
+                showDialog(880);
             }
         });
         firstSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -74,18 +74,18 @@ public class MainActivity extends AppCompatActivity {
                 if(isChecked){
                     SharedPreferences sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
-                    int hour = sharedPref.getInt(Hour,0);
-                    int minute = sharedPref.getInt(Minute,0);
-                    notification(hour,minute);
-                    editor.putBoolean(Switch_Mode, true);
-                    switchStatus.setText("ON");
+                    int hour = sharedPref.getInt(first_Hour,0);
+                    int minute = sharedPref.getInt(first_Minute,0);
+                    notification(hour,minute,0);
+                    editor.putBoolean(first_Switch_Mode, true);
+                    first_switchStatus.setText("ON");
                 }else{
-                    editor.putBoolean(Switch_Mode,false);
-                    if (am!= null) {
-                        am.cancel(pendingIntent);//Cancel the pre set Alarm From Alarm manager
+                    editor.putBoolean(first_Switch_Mode,false);
+                    if (first_am!= null) {
+                        first_am.cancel(pendingIntent);//Cancel the pre set Alarm From Alarm manager
                         pendingIntent.cancel();//Release The panding intent
                     }
-                    switchStatus.setText("OFF");
+                    first_switchStatus.setText("OFF");
                 }
                 editor.commit();
             }
@@ -93,22 +93,23 @@ public class MainActivity extends AppCompatActivity {
 
         //check the current state before we display the screen
         if(firstSwitch.isChecked()){
-            switchStatus.setText("ON");
+            first_switchStatus.setText("ON");
         }
         else {
-            switchStatus.setText("OFF");
+            first_switchStatus.setText("OFF");
         }
     }
     public void SecondList(){
-        ImageView set = (ImageView) findViewById(R.id.setime);
+        ImageView set = (ImageView) findViewById(R.id.second_imageview);
         timetv1 = (TextView) findViewById(R.id.alarmTime1);
-        read_time(Hour1,Minute1,2);
+        read_time(second_Hour, second_Minute,SECONDALARM);
         secondSwitch = (Switch) findViewById(R.id.switch2);
+        secondSwitch.setChecked(read_sharedprefarance(SECONDALARM));
         switchStatus1 = (TextView) findViewById(R.id.status1);
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog(888);
+                showDialog(881);
 
             }
         });
@@ -121,15 +122,15 @@ public class MainActivity extends AppCompatActivity {
                 if(isChecked){
                     SharedPreferences sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
-                    int hour = sharedPref.getInt(Hour1,0);
-                    int minute = sharedPref.getInt(Minute1,0);
-                    notification(hour,minute);
-                    editor.putBoolean(Switch_Mode1, true);
+                    int hour = sharedPref.getInt(second_Hour,0);
+                    int minute = sharedPref.getInt(second_Minute,0);
+                    notification(hour,minute,1);
+                    editor.putBoolean(second_Switch_Mode, true);
                     switchStatus1.setText("ON");
                 }else{
-                    editor.putBoolean(Switch_Mode1,false);
-                    if (am!= null) {
-                        am.cancel(pendingIntent);//Cancel the pre set Alarm From Alarm manager
+                    editor.putBoolean(second_Switch_Mode,false);
+                    if (am1!= null) {
+                        am1.cancel(pendingIntent);//Cancel the pre set Alarm From Alarm manager
                         pendingIntent.cancel();//Release The panding intent
                     }
                     switchStatus1.setText("OFF");
@@ -137,17 +138,30 @@ public class MainActivity extends AppCompatActivity {
                 editor.commit();
             }
         });
-        if(firstSwitch.isChecked()){
-            switchStatus.setText("ON");
+        if(secondSwitch.isChecked()){
+            switchStatus1.setText("ON");
         }
         else {
-            switchStatus.setText("OFF");
+            switchStatus1.setText("OFF");
         }
     }
-    public boolean read_sharedprefarance(){
+
+    public boolean read_sharedprefarance(int id){
         SharedPreferences sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);\
-        boolean mode = sharedPref.getBoolean(Switch_Mode,false);
+        boolean mode = false;
+        switch(id)
+        {
+            case 1:
+                mode = sharedPref.getBoolean(first_Switch_Mode,false);
+                break;
+            case 2:
+                mode = sharedPref.getBoolean(second_Switch_Mode,false);
+                break;
+            default:
+                mode = false;
+
+        }
 
         return mode;
     }
@@ -161,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         switch(i)
         {
             case 1:
-            timetv.setText(time);
+            first_time.setText(time);
             break;
             case 2:
                 timetv1.setText(time);
@@ -176,10 +190,24 @@ public class MainActivity extends AppCompatActivity {
 
          //  notification(hourOfDay, minute);
             SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putInt(Hour, hourOfDay);
-            editor.putInt(Minute,minute);
-            editor.commit();
-            read_time(Hour,Minute,1);
+            switch(dialog_no)
+            {
+                case 0:
+                    editor.putInt(first_Hour, hourOfDay);
+                    editor.putInt(first_Minute,minute);
+                    editor.commit();
+                    read_time(first_Hour, first_Minute,dialog_no+1);
+                   break;
+                case 1:
+                    editor.putInt(second_Hour, hourOfDay);
+                    editor.putInt(second_Minute,minute);
+                    editor.commit();
+                    read_time(second_Hour, second_Minute,dialog_no+1);
+                    break;
+                default:
+
+            }
+
 
 
         }
@@ -192,14 +220,21 @@ public class MainActivity extends AppCompatActivity {
         // showDate(year, month + 1, day);
         Calendar calendar;
         calendar = Calendar.getInstance();
-       if (id == 888){
+       if (id == 880){
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int min = calendar.get(Calendar.MINUTE);
+           dialog_no = 0;
             return new TimePickerDialog(this, myTimeListener, hour, min, false);
-        }else
+        }else if(id == 881) {
+           int hour = calendar.get(Calendar.HOUR_OF_DAY);
+           int min = calendar.get(Calendar.MINUTE);
+           dialog_no =1;
+           return new TimePickerDialog(this, myTimeListener, hour, min, false);
+        }else{
+        }
             return null;
     }
-    private void notification(int h ,int m){
+    private void notification(int h ,int m ,int number ){
         //Locale alocal = new Locale
 
         Calendar calendar = Calendar.getInstance();
@@ -215,11 +250,26 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this, 0 , intent1,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-        am = (AlarmManager) MainActivity.this
-                .getSystemService(MainActivity.this.ALARM_SERVICE);
+        switch(number)
+        {
+            case 0:
+            first_am = (AlarmManager) MainActivity.this
+                    .getSystemService(MainActivity.this.ALARM_SERVICE);
 
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                1000*60, pendingIntent);
+            first_am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    1000*60, pendingIntent);
+                break;
+            case 1:
+                am1 = (AlarmManager) MainActivity.this
+                        .getSystemService(MainActivity.this.ALARM_SERVICE);
+
+                am1.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        1000*60, pendingIntent);
+                break;
+            default:
+
+        }
+
        // am.cancel(pendingIntent);
     }
 
